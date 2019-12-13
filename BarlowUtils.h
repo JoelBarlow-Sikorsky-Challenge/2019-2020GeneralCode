@@ -1,10 +1,19 @@
 #include <math.h>;
+#include <Arduino.h>
 
 #define AVG(a, b) (a + b) / 2
-#define INRANGE(x, a, b) (x >= a && x <= b ? true : false)
+#define IN_RANGE(x, a, b) (x >= a && x <= b ? true : false)
 
 #define PI 3.14159265
+#define SECTOR_SIZE 90
 
+enum SensorType
+{
+    Digital,
+    Analog
+};
+
+template <SensorType T>
 class Sensor
 {
 protected:
@@ -15,7 +24,14 @@ public:
     {
         this->port = port;
     }
-    int Read();
+
+    int Read()
+    {
+        if (T == Digital)
+            return digitalRead(port);
+        if (T == Analog)
+            return analogRead(port);
+    };
 };
 
 class StepperMotor
@@ -37,10 +53,10 @@ struct Sector
         this->angle = fmod(angle + 360 * 10, 360);
     }
 
-    bool isIn(float otherAngle)
+    bool isIn(Sector otherAngle)
     {
-        float diff = fabs(angle - otherAngle);
-        return INRANGE(diff, 0, 30) || INRANGE(diff, 330, 360);
+        float diff = fabs(angle - otherAngle.angle);
+        return IN_RANGE(diff, 0, SECTOR_SIZE / 2) || IN_RANGE(diff, 360 - SECTOR_SIZE / 2, 360);
     }
 };
 
@@ -72,7 +88,7 @@ normalize(int nums[4])
  * @param sensors List of pressure sensors in order of: Top, Right, Bottom, Left
  * @returns Range of 0 to 360
  * */
-float getRopeAngle(Sensor *sensors[4])
+float getRopeAngle(Sensor<SensorType::Analog> *sensors[4])
 {
     float x = 0;
     float y = 0;

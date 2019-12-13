@@ -4,8 +4,8 @@
 
 ClawController::ClawController(int limitSWPorts[2], int stepperPorts[2], bool zero = true)
 {
-    xLim = new Sensor(limitSWPorts[0]);
-    yLim = new Sensor(limitSWPorts[1]);
+    xLim = new Sensor<SensorType::Digital>(limitSWPorts[0]);
+    yLim = new Sensor<SensorType::Digital>(limitSWPorts[1]);
     xMot = new StepperMotor(stepperPorts[0]);
     yMot = new StepperMotor(stepperPorts[1]);
     if (zero)
@@ -21,7 +21,7 @@ int ClawController::setPos(int x, int y)
     int mY = _y - y;
 
     //Verify new position is within the claw plane
-    if (!INRANGE(mX, 0, xMax) || !INRANGE(mX, 0, yMax))
+    if (!IN_RANGE(mX, 0, xMax) || !IN_RANGE(mX, 0, yMax))
         return -1;
 
     //Move the motors
@@ -52,4 +52,11 @@ int ClawController::zero()
             return;
         delay(ZERO_SPEED);
     }
+}
+
+int ClawController::moveAtAngle(float angle, int dist)
+{
+    int y = sinf(angle) * dist;
+    int x = cosf(angle) * dist;
+    setPos(_x + x, _x + x);
 }
