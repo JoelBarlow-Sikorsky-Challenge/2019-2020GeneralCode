@@ -8,8 +8,8 @@ private:
     int xMax;
     int yMax;
 
-    Sensor *xLim;
-    Sensor *yLim;
+    Sensor<SensorType::Digital> *xLim;
+    Sensor<SensorType::Digital> *yLim;
     StepperMotor *xMot;
     StepperMotor *yMot;
 

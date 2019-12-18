@@ -23,6 +23,7 @@ public:
     Sensor(int port)
     {
         this->port = port;
+        pinMode(pin, INPUT);
     }
 
     int Read()
