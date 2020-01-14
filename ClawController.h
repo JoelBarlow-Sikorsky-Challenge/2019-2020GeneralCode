@@ -10,8 +10,8 @@ private:
 
     Sensor<SensorType::Digital> *xLim;
     Sensor<SensorType::Digital> *yLim;
-    StepperMotor *xMot;
-    StepperMotor *yMot;
+    StepperMotor *lMot;
+    StepperMotor *rMot;
 
 public:
     ClawController(int limitSWPorts[2], int stepperPorts[2], bool zero = true);
